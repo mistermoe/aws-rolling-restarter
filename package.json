@@ -1,0 +1,25 @@
+{
+  "name": "aws-rolling-restarter",
+  "version": "0.1.2",
+  "description": "Progressively restarts ec2 instances under any Opsworks layer, x machines at a time",
+  "main": "RollingRestarter.js",
+  "dependencies": {
+    "aws-sdk": "^2.0.28"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mistermoe/aws-rolling-restarter"
+  },
+  "keywords": [
+    "aws",
+    "AWS",
+    "opsworks",
+    "ec2"
+  ],
+  "author": "Moe Jangda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mistermoe/aws-rolling-restarter/issues"
+  },
+  "homepage": "https://github.com/mistermoe/aws-rolling-restarter"
+}
