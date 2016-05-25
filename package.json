@@ -1,6 +1,6 @@
 {
   "name": "aws-rolling-restarter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Progressively restarts ec2 instances under any Opsworks layer, x machines at a time",
   "main": "RollingRestarter.js",
   "dependencies": {
