@@ -99,8 +99,15 @@ function startMachine(machine, machineNum) {
         }
         else if (data["Instances"][0].Status == "setup_failed") {
           clearInterval(checkIfOnline);
-          console.log("( " + machine.name + " ) setup failed. stopping then starting again." );
-          stopMachine(machine, machineNum);
+          console.log("( " + machine.name + " ) setup failed." );
+
+          if (global.retryOnSetupFailed) {
+            console.log("( " + machine.name + " ) retrying" );
+            stopMachine(machine, machineNum);
+          }
+          else {
+            global.old_machines.total -= 1;
+          }
         }
       });
     }, machineNum * 1000);
@@ -156,6 +163,7 @@ module.exports = {
 
     global.layerId = config.layerId;
     global.groupSize = config.groupSize;
+    global.retryOnSetupFailed: config.retryOnSetupFailed || false
   },
 
   start: start
