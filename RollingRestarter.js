@@ -95,12 +95,12 @@ function startMachine(machine, machineNum) {
           clearInterval(checkIfOnline);
           console.log(data["Instances"][0].Status);
           console.log("did the weird thing. attempting to start " + machine.name + " again.");
-          startMachine(machine);
+          startMachine(machine, machineNum);
         }
         else if (data["Instances"][0].Status == "setup_failed") {
           clearInterval(checkIfOnline);
           console.log("( " + machine.name + " ) setup failed. stopping then starting again." );
-          stopMachine(machine);
+          stopMachine(machine, machineNum);
         }
       });
     }, machineNum * 1000);
