@@ -163,7 +163,7 @@ module.exports = {
 
     global.layerId = config.layerId;
     global.groupSize = config.groupSize;
-    global.retryOnSetupFailed: config.retryOnSetupFailed || false
+    global.retryOnSetupFailed = config.retryOnSetupFailed || false
   },
 
   start: start
