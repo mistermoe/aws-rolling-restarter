@@ -18,7 +18,7 @@ npm install aws-rolling-restarter
 ```
 ----------
 ## Usage ##
-```
+```javascript
 var restarter = require("aws-rolling-restarter");
 
 restarter.init({
