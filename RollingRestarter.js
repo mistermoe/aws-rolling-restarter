@@ -3,6 +3,9 @@ var events = require('events');
 var emitter = new events.EventEmitter();
 
 var global = {
+  eventListeners: {
+    done: []
+  },
   old_machines: {
     stopped: [],
     online: [],
@@ -70,11 +73,11 @@ function startMachine(machine, machineNum) {
   global.opsworks.startInstance({InstanceId: machine.instance_id}, function(err, data){
     if (err) throw err;
     console.log("( " + machine.name + " ) starting up.");
+    
     var checkIfOnline = setInterval(function(){
       global.opsworks.describeInstances({InstanceIds: [machine.instance_id]}, function(err, data){
 
         if (data["Instances"][0].Status == "online") {
-          console.log(data["Instances"][0].Status);
           clearInterval(checkIfOnline);
 
           var online = global.new_machines.starting_up.splice(global.new_machines.starting_up.indexOf(machine), 1)[0];
@@ -82,12 +85,6 @@ function startMachine(machine, machineNum) {
 
           console.log("[" + global.new_machines.online.length + "] ( " + machine.name + " ) online");
           console.log("grabbing next machine to restart");
-
-          if (global.first_restart) {
-            console.log("(" + machine.name + ")" + " first place! I am the watcher.");
-            global.first_restart = false;
-            stop();
-          }
 
           restartNextMachine();
         }
@@ -121,21 +118,12 @@ function restartNextMachine() {
     global.machine_num += 1;
     stopMachine(machine, global.machine_num);
   }
-}
-
-function stop() {
-  if (global.old_machines.online.length > 0 ) { }
-  else if (global.old_machines.online.length == 0 && global.new_machines.online.length != global.old_machines.total) {
-    console.log("no old machines to restart. Waiting for machines to finish starting up. Checking again in 5 seconds..");
-  }
   else if (global.new_machines.online.length == global.old_machines.total) {
-    console.log("all machines restarted");
-    process.exit(0);
-  }
+    var eventListeners = global.eventListeners["done"];
 
-  var checkIfDone = setTimeout(function(){
-    stop();
-  }, 150000);
+    for (var i = 0; i < eventListeners.length; i += 1)
+      eventListeners[i]();
+  }
 }
 
 function start() {
@@ -153,6 +141,15 @@ function start() {
   });
 }
 
+function on(event, callback) {
+  var eventListeners = global.eventListeners;
+
+  if (!eventListeners[event])
+    throw new Error(`${event} is not an event that's triggered. Available events: ${Object.keys(eventListeners)}`);
+
+  eventListeners[event].push(callback);
+}
+
 module.exports = {
   init: function(config) {
     global.opsworks = new AWS.OpsWorks({
@@ -166,5 +163,6 @@ module.exports = {
     global.retryOnSetupFailed = config.retryOnSetupFailed || false
   },
 
-  start: start
+  start: start,
+  on: on
 }
