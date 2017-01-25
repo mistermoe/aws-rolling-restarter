@@ -34,3 +34,12 @@ restarter.start();
 ```
 ----------
 
+## Events ##
+- you can add event listeners using the `on` function like so:
+```js
+restarter.on("done", () => {
+  console.log("done restarting");
+});
+```
+- Available events:
+  - `"done"`
